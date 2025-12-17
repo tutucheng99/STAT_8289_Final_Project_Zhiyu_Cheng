@@ -1,0 +1,163 @@
+{
+  "timestamp": "2025-12-17T09:41:42.348469",
+  "config": {
+    "data_dir": "data/processed/policy_samples",
+    "data_file": "100K_pi_H_v2_policy_samples.npz",
+    "meta_file": "100K_pi_H_v2_metadata.json",
+    "results_dir": "results/fda",
+    "n_bootstrap": 100,
+    "n_permutations": 100,
+    "n_splines": 10,
+    "seed": 42,
+    "fdr_alpha": 0.05
+  },
+  "data_summary": {
+    "n_samples": 100000,
+    "n_episodes": 9438,
+    "n_features": 48,
+    "n_actions": 38
+  },
+  "analysis_summary": {
+    "covariates_analyzed": [
+      "hcp_total",
+      "controls_total",
+      "ltc",
+      "quick_tricks",
+      "n_contracts_bid"
+    ],
+    "actions_analyzed": [
+      "Dbl",
+      "1C",
+      "1D",
+      "1H",
+      "1S",
+      "1NT",
+      "2C"
+    ],
+    "n_combinations": 35,
+    "n_significant_fdr": 35,
+    "fdr_alpha": 0.05
+  },
+  "top_effects": [
+    {
+      "covariate": "hcp_total",
+      "action": "Dbl",
+      "mean_diff": -0.4473179804426626,
+      "pct_significant_pointwise": 0.97,
+      "pct_significant_simultaneous": 0.92,
+      "p_raw": 0.009900990099009901,
+      "p_adjusted": 0.009900990099009901,
+      "significant_fdr": true,
+      "n_samples": 44607,
+      "n_episodes": 9310
+    },
+    {
+      "covariate": "hcp_total",
+      "action": "1C",
+      "mean_diff": 4.246750766872886,
+      "pct_significant_pointwise": 1.0,
+      "pct_significant_simultaneous": 0.98,
+      "p_raw": 0.009900990099009901,
+      "p_adjusted": 0.009900990099009901,
+      "significant_fdr": true,
+      "n_samples": 15643,
+      "n_episodes": 9133
+    },
+    {
+      "covariate": "hcp_total",
+      "action": "1D",
+      "mean_diff": 3.2727244786593737,
+      "pct_significant_pointwise": 1.0,
+      "pct_significant_simultaneous": 0.98,
+      "p_raw": 0.009900990099009901,
+      "p_adjusted": 0.009900990099009901,
+      "significant_fdr": true,
+      "n_samples": 18431,
+      "n_episodes": 9156
+    },
+    {
+      "covariate": "hcp_total",
+      "action": "1H",
+      "mean_diff": -0.570593707953874,
+      "pct_significant_pointwise": 1.0,
+      "pct_significant_simultaneous": 0.98,
+      "p_raw": 0.009900990099009901,
+      "p_adjusted": 0.009900990099009901,
+      "significant_fdr": true,
+      "n_samples": 21740,
+      "n_episodes": 9173
+    },
+    {
+      "covariate": "hcp_total",
+      "action": "1S",
+      "mean_diff": -1.0953044871792612,
+      "pct_significant_pointwise": 0.99,
+      "pct_significant_simultaneous": 0.97,
+      "p_raw": 0.009900990099009901,
+      "p_adjusted": 0.009900990099009901,
+      "significant_fdr": true,
+      "n_samples": 25028,
+      "n_episodes": 9107
+    },
+    {
+      "covariate": "hcp_total",
+      "action": "1NT",
+      "mean_diff": -0.9471886601640728,
+      "pct_significant_pointwise": 0.87,
+      "pct_significant_simultaneous": 0.74,
+      "p_raw": 0.009900990099009901,
+      "p_adjusted": 0.009900990099009901,
+      "significant_fdr": true,
+      "n_samples": 30155,
+      "n_episodes": 9130
+    },
+    {
+      "covariate": "hcp_total",
+      "action": "2C",
+      "mean_diff": -1.275143952915149,
+      "pct_significant_pointwise": 0.97,
+      "pct_significant_simultaneous": 0.7,
+      "p_raw": 0.009900990099009901,
+      "p_adjusted": 0.009900990099009901,
+      "significant_fdr": true,
+      "n_samples": 34569,
+      "n_episodes": 9140
+    },
+    {
+      "covariate": "controls_total",
+      "action": "Dbl",
+      "mean_diff": -0.5449440731552988,
+      "pct_significant_pointwise": 0.96,
+      "pct_significant_simultaneous": 0.93,
+      "p_raw": 0.009900990099009901,
+      "p_adjusted": 0.009900990099009901,
+      "significant_fdr": true,
+      "n_samples": 46622,
+      "n_episodes": 9358
+    },
+    {
+      "covariate": "controls_total",
+      "action": "1C",
+      "mean_diff": 4.155515413370529,
+      "pct_significant_pointwise": 0.99,
+      "pct_significant_simultaneous": 0.97,
+      "p_raw": 0.009900990099009901,
+      "p_adjusted": 0.009900990099009901,
+      "significant_fdr": true,
+      "n_samples": 16605,
+      "n_episodes": 9327
+    },
+    {
+      "covariate": "controls_total",
+      "action": "1D",
+      "mean_diff": 4.16587877192692,
+      "pct_significant_pointwise": 0.98,
+      "pct_significant_simultaneous": 0.97,
+      "p_raw": 0.009900990099009901,
+      "p_adjusted": 0.009900990099009901,
+      "significant_fdr": true,
+      "n_samples": 18963,
+      "n_episodes": 9137
+    }
+  ]
+}

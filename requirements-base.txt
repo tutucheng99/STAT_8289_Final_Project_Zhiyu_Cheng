@@ -1,0 +1,40 @@
+# ============================================================
+# Bridge Bidding Interpretability - Base Dependencies
+# ============================================================
+# Note: JAX/JAXlib should be installed separately via
+#       requirements-cpu.txt or requirements-gpu.txt
+# ============================================================
+
+# ===== PGX & Bridge Environment =====
+pgx==1.4.0
+
+# ===== Deep Learning Framework (requires JAX) =====
+dm-haiku==0.0.11
+optax==0.1.7
+flax==0.7.5
+chex==0.1.85
+distrax==0.1.5
+
+# ===== FDA / Statistical Analysis (strictly pinned) =====
+numpy==1.26.3
+scipy==1.11.4
+pandas==2.1.4
+scikit-learn==1.3.2
+statsmodels==0.14.1
+
+# ===== Interpretable ML =====
+interpret==0.5.1
+
+# ===== Visualization =====
+matplotlib==3.8.2
+seaborn==0.13.0
+
+# ===== Configuration & Utilities =====
+omegaconf==2.3.0
+hydra-core==1.3.2
+pyyaml==6.0.1
+tqdm==4.66.1
+cloudpickle==3.0.0
+
+# ===== Logging =====
+wandb==0.16.1

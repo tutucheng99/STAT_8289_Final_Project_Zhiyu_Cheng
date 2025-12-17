@@ -1,0 +1,10 @@
+# ============================================================
+# JAX CPU Installation
+# ============================================================
+# Run: pip install -r requirements-cpu.txt
+# Then: pip install -r requirements-base.txt
+# ============================================================
+
+--find-links https://storage.googleapis.com/jax-releases/jax_releases.html
+jax==0.4.23
+jaxlib==0.4.23

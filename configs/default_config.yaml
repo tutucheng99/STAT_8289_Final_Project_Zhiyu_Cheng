@@ -1,0 +1,118 @@
+# ============================================================
+# Bridge Bidding Interpretability - Default Configuration
+# ============================================================
+# Usage:
+#   python scripts/run_fda.py --config configs/default_config.yaml
+#   python scripts/run_fda.py repro.seed=123  # override via CLI
+# ============================================================
+
+# ============== Hydra Configuration ==============
+# Prevents Hydra from changing working directory and creating its own output dirs
+# Our meta_logger handles output directory management instead
+hydra:
+  job:
+    chdir: false        # Do NOT change working directory
+  run:
+    dir: .              # Keep outputs in project root (we use our own run_id system)
+  output_subdir: null   # Disable Hydra's automatic output subdirectory
+
+# ============== Reproducibility ==============
+repro:
+  seed: 42
+  deterministic: true
+  save_git_hash: true
+  save_pip_freeze: true
+
+# ============== Compute Device ==============
+compute:
+  platform: "cpu"        # cpu / gpu
+  enable_x64: false      # JAX 64-bit precision
+
+# ============== Run Management ==============
+run:
+  name: "default"
+  output_dir: "results"
+  overwrite: false       # Prevent overwriting existing results
+
+# ============== Path Configuration ==============
+paths:
+  # Internal paths (relative to project root)
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  data_cache: "data/cache"
+  checkpoints: "checkpoints"
+  logs: "logs"
+  fig: "fig"
+
+  # DDS data (12.5M train pool + 100K eval)
+  dds_train_files:
+    - "data/raw/dds_results/dds_results_10M.npy"
+    - "data/raw/dds_results/dds_results_2.5M.npy"
+  dds_eval_file: "data/raw/dds_results/dds_results_100K_eval.npy"
+
+  # OpenSpiel SL data
+  sl_train_data: "data/raw/openspiel_bridge/train.txt"
+  sl_test_data: "data/raw/openspiel_bridge/test.txt"
+
+  # Data manifest
+  data_manifest: "data/raw/data_manifest.json"
+
+# ============== Model Architecture ==============
+model:
+  hidden_dims: [1024, 1024, 1024, 1024]
+  activation: "relu"
+  num_actions: 38
+
+# ============== Supervised Learning ==============
+sl:
+  iterations: 400000
+  batch_size: 128
+  learning_rate: 1.0e-4
+  eval_every: 10000
+
+# ============== PPO Configuration ==============
+ppo:
+  num_envs: 8192
+  num_steps: 32
+  minibatch_size: 1024
+  total_timesteps: 2621440000
+  update_epochs: 10
+  lr: 1.0e-6
+  gamma: 1.0
+  gae_lambda: 0.95
+  clip_coef: 0.2
+  ent_coef: 1.0e-3
+  vf_coef: 0.5
+
+# ============== Policy Sampling ==============
+sampling:
+  num_samples: 1000000
+  smoothing_epsilon: 1.0e-5
+  batch_size: 1024
+
+# ============== FDA Configuration ==============
+fda:
+  reference_action: 0             # Pass index for ALR
+  bootstrap_iterations: 200
+  confidence_level: 0.95
+  spline_smoothing: "cubic"
+  stratification:
+    - "opening"
+    - "response_1nt"
+    - "balanced"
+
+# ============== JSD Configuration ==============
+jsd:
+  num_bins: 20
+  weight_by_frequency: true
+
+# ============== Distillation ==============
+distillation:
+  model_type: "gam"               # gam / rulefit
+  max_interactions: 3
+  n_splines: 25
+
+# ============== Post-hoc Filtering (Bonus) ==============
+posthoc:
+  alpha: 1.0
+  tau: 2.0

@@ -1,0 +1,429 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx,psfrag,epsf}
+\usepackage{enumerate}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{subcaption}
+
+% NOTE: To produce blinded version, replace "0" with "1" below.
+\newcommand{\blind}{0}
+
+% DON'T change margins - should be 1 inch all around.
+\addtolength{\oddsidemargin}{-.5in}%
+\addtolength{\evensidemargin}{-.5in}%
+\addtolength{\textwidth}{1in}%
+\addtolength{\textheight}{-.3in}%
+\addtolength{\topmargin}{-.8in}%
+
+% Custom commands
+\newcommand{\piH}{\pi^H}
+\newcommand{\piR}{\pi^R}
+\newcommand{\piD}{\pi^D}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\KL}{\text{KL}}
+\newcommand{\JSD}{\text{JSD}}
+\newcommand{\ALR}{\text{ALR}}
+
+\begin{document}
+
+\def\spacingset#1{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize} \spacingset{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\if0\blind
+{
+  \bigskip
+  \bigskip
+  \bigskip
+  \begin{center}
+    {\LARGE\bf Interpreting Bridge Bidding Policies via Compositional Functional Data Analysis and Rule Distillation}
+\end{center}
+  \medskip
+} \fi
+
+\bigskip
+\begin{abstract}
+Deep reinforcement learning has produced competitive bridge bidding systems, yet the decision-making process of these neural network policies remains difficult to interpret. We present a framework for comparing a human-imitation policy $\piH$ trained via supervised learning with an RL-optimized policy $\piR$. We employ 4 complementary analytical approaches: compositional functional data analysis using additive log-ratio transformations with generalized additive models to characterize action-specific preference differences; Jensen-Shannon divergence analysis with explainable boosting machines to identify states of high policy disagreement; permutation-based occlusion analysis to quantify feature group importance; and decision tree distillation to extract interpretable approximations. Our analysis of 100,000 bidding states reveals that policy divergence concentrates in opening bid decisions, with $\piR$ exhibiting stronger preferences for minor suit openings while $\piH$ favors major suits and strong bids. All 35 covariate-action combinations show statistically significant differences after multiple testing correction, and the bidding history emerges as the most influential feature group with KL divergence of 6.49. These findings provide insights for understanding and potentially improving bridge AI systems.
+\end{abstract}
+
+\noindent%
+{\it Keywords:}  Reinforcement Learning; Functional Data Analysis; Compositional Data; Policy Interpretability; Contract Bridge; Generalized Additive Models
+\vfill
+
+\newpage
+\spacingset{1.45}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+\label{sec:intro}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Contract bridge is a 4-player partnership card game that has long served as a challenging benchmark for artificial intelligence research \citep{Ginsberg1999}. The bidding phase of bridge, where players communicate information about their hands through a sequence of calls, presents particular challenges due to imperfect information, the need for implicit communication with partners, and the vast state-action space \citep{Yeh2018}.
+
+Recent advances in deep reinforcement learning have produced bridge-playing systems with strong performance \citep{Lockhart2020, Tian2020, Rong2019}. While AI has achieved superhuman card play, bidding remains challenging, with current systems performing at roughly the level of competent club players rather than experts. These systems typically employ neural network policies trained through a combination of supervised learning on human expert data and reinforcement learning optimization. The resulting policies make it difficult to understand why specific bidding decisions are made or how the RL-optimized policy differs from human conventions.
+
+Understanding these differences has both practical and theoretical importance. From a practical standpoint, bridge players and developers seek to know whether RL discoveries represent genuine strategic improvements or artifacts of training. Theoretically, comparing human-imitation and RL-optimized policies provides insights into where human intuition aligns with or diverges from computational optimization.
+
+We present a systematic framework for interpreting bridge bidding policies through the lens of functional data analysis and interpretable machine learning. We compare 2 policies from a recent bridge RL system \citep{Kita2024}: a human-imitation policy $\piH$ trained via supervised learning on expert bidding data from the WBridge5 system using the Standard American Yellow Card convention, and an RL-optimized policy $\piR$ initialized from $\piH$ and further trained using Proximal Policy Optimization with Fictitious Self-Play \citep{Schulman2017, Heinrich2015}.
+
+Our analytical framework makes the following contributions:
+\begin{itemize}
+    \item We apply compositional FDA to policy comparison, treating probability distributions as compositional data and using the additive log-ratio transformation to analyze how action preferences vary with hand characteristics. GAM fitting with cluster bootstrap inference provides pointwise and simultaneous confidence bands.
+
+    \item We use Jensen-Shannon divergence as a scalar measure of policy disagreement and employ explainable boosting machines to identify which features predict high divergence.
+
+    \item We quantify feature group importance through permutation-based occlusion analysis, measuring how shuffling feature groups affects policy outputs.
+
+    \item We approximate the neural network policy with decision trees and GAMs to extract explicit decision rules and evaluate the fidelity-complexity tradeoff.
+\end{itemize}
+
+The remainder of this paper is organized as follows. Section~\ref{sec:background} provides background on bridge bidding and the policy representations used. Section~\ref{sec:methods} details our analytical methods. Section~\ref{sec:results} presents our findings, and Section~\ref{sec:discussion} discusses implications and limitations.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Background}
+\label{sec:background}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Contract Bridge Bidding}
+
+In contract bridge, 4 players form 2 partnerships, with North-South playing against East-West. Each player receives 13 cards from a standard 52-card deck. The bidding phase proceeds clockwise, with each player making 1 of 38 possible calls. A player may pass to decline bidding, double or redouble to increase stakes on an opponent's or partner's contract, or make 1 of 35 contract bids that combine a level from 1 to 7 with a strain of clubs, diamonds, hearts, spades, or no-trump.
+
+Bidding ends when 3 consecutive passes follow a contract bid, or when all 4 players pass initially. The final contract determines the declarer and the number of tricks required to fulfill the contract.
+
+\subsection{Policy Representation}
+
+We adopt the observation and policy representations from \citet{Kita2024}, which builds on the OpenSpiel \citep{Lanctot2019} and Pgx \citep{Koyamada2023} frameworks. The observation $s \in \{0,1\}^{480}$ encodes 4 bits for vulnerability status, 4 bits for position before opening, 420 bits for bidding history consisting of 35 contracts by 3 states by 4 players, and 52 bits for hand encoding as a one-hot card representation.
+
+The policy $\pi(a|s)$ outputs a probability distribution over the 38 legal actions, with illegal actions masked to zero probability.
+
+\subsection{Feature Engineering}
+
+To enable interpretable analysis, we extract 48 statistical covariates from each observation. The 28 hand features include high card points by suit and in total, suit lengths, distribution measures such as whether the hand is balanced along with counts of singletons and voids, control counts where an ace counts as 2 and a king as 1, the losing trick count, quick tricks, and honor card counts. The 13 bidding features capture the auction level, contract strain, double status, whether the auction is competitive, whether it is a pass-out, and the opener identity for each seat. The 7 context features encode vulnerability for each side, favorable or unfavorable vulnerability conditions, and the number of passes before opening.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Methods}
+\label{sec:methods}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Data Collection}
+
+We collected 100,000 bidding states by simulating episodes using $\piH$ as the behavior policy. At each state, we recorded the observation, extracted covariates, and computed the probability distributions from both $\piH$ and $\piR$. Using $\piH$ for action selection ensures the state distribution reflects scenarios that a human-like policy would encounter, avoiding the distributional artifacts that arise from uniform random action selection.
+
+To ensure numerical stability for log-ratio transforms, we apply additive smoothing:
+\begin{equation}
+    \tilde{\pi}(a|s) = \frac{\pi(a|s) + \epsilon}{1 + K\epsilon}
+\end{equation}
+where $\epsilon = 10^{-5}$ and $K = 38$ is the number of actions. This ensures all probabilities are strictly positive while preserving normalization.
+
+\subsection{Compositional FDA with ALR Transform}
+
+Policy probability vectors lie on the simplex $\mathcal{S}^{K-1}$, making standard Euclidean methods inappropriate. We employ the additive log-ratio transformation \citep{Aitchison1986} with Pass as the reference action:
+\begin{equation}
+    \ALR_b(s) = \log\frac{\pi(b|s)}{\pi(\text{Pass}|s)}, \quad b = 1, \ldots, K-1
+\end{equation}
+
+Pass serves as an ideal reference because it is the only action that is legal in every bidding state.
+
+We define the ALR difference for action $b$ as:
+\begin{equation}
+    \Delta_b(s) = \ALR_b^R(s) - \ALR_b^H(s) = \log\frac{\piR(b|s)/\piR(\text{Pass}|s)}{\piH(b|s)/\piH(\text{Pass}|s)}
+\end{equation}
+
+For each covariate $x$ and action $b$, we fit a generalized additive model:
+\begin{equation}
+    \Delta_b = f_b(x) + \varepsilon, \quad f_b(x) = s(x; \lambda)
+\end{equation}
+where $s(\cdot)$ denotes a penalized spline with smoothing parameter $\lambda$ selected via grid search.
+
+\subsubsection{Statistical Inference}
+
+We employ cluster bootstrap with episodes as clusters to account for within-episode correlation. For each of 100 bootstrap samples, we resample episodes with replacement, refit the GAM on the bootstrap sample, and evaluate the fitted curve on a grid of 100 points. This yields pointwise 95\% confidence intervals at each grid point. We also compute simultaneous confidence bands using the maximum deviation approach.
+
+To test $H_0: \Delta_b(x) \equiv 0$, we use a curve-based permutation test. We compute the test statistic $T_{\text{obs}} = \text{mean}(|f_b(x)|)$, then for 100 permutations we flip signs of $\Delta_b$ at the episode level, refit the GAM, and compute the permutation statistic $T_p$. The p-value is computed as $(1 + \sum_p \mathbf{1}(T_p \geq T_{\text{obs}}))/(1 + P)$. We apply Benjamini-Hochberg correction \citep{BenjaminiHochberg1995} for multiple testing across all covariate-action pairs.
+
+\subsection{Jensen-Shannon Divergence Analysis}
+
+The JSD provides a bounded, symmetric measure of distributional difference:
+\begin{equation}
+    \JSD(\piH, \piR) = \frac{1}{2}\KL(\piH \| M) + \frac{1}{2}\KL(\piR \| M)
+\end{equation}
+where $M = \frac{1}{2}(\piH + \piR)$ and $\JSD \in [0, 1]$ when using base-2 logarithm.
+
+We fit an explainable boosting machine \citep{Nori2019} to predict JSD from covariates:
+\begin{equation}
+    \JSD(s) \approx \sum_i f_i(x_i) + \sum_{i<j} f_{ij}(x_i, x_j)
+\end{equation}
+EBMs provide interpretable feature importance scores and shape functions while capturing nonlinear effects and interactions. We allow up to 10 pairwise interaction terms.
+
+\subsection{Occlusion Analysis}
+
+To quantify the importance of feature groups, we use permutation-based occlusion. We define 4 feature groups in the 480-dimensional observation: vulnerability with 4 dimensions, position with 4 dimensions, bidding history with 420 dimensions, and hand encoding with 52 dimensions. For each group, we shuffle the features within that group across samples, re-run policy inference, and compute $\KL(\pi_{\text{original}} \| \pi_{\text{perturbed}})$. We average the results over 5 random permutations. Higher KL divergence indicates greater feature group importance.
+
+\subsection{Rule Distillation}
+
+We approximate $\piR$ with interpretable surrogate models. For decision tree distillation, we train a multi-class classifier predicting $\arg\max_a \piR(a|s)$ from the 48 covariates. We train trees with varying depth constraints of 3, 5, 7, 10, 15, and unlimited to examine the fidelity-complexity tradeoff.
+
+For per-action GAM distillation, we train a logistic GAM for each action $b$ to predict $\mathbf{1}[\arg\max_a \piR(a|s) = b]$, providing smooth shape functions for each covariate's influence on action selection.
+
+Fidelity is measured by top-1 agreement, which is the exact match rate, and top-3 agreement, which checks whether the correct action appears in the top 3 predictions.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\label{sec:results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Data Summary}
+
+Table~\ref{tab:data_summary} summarizes the collected dataset. The state distribution reflects realistic bidding scenarios, with auction levels concentrated in the 1 to 4 range. The 100,000 states come from 9,438 unique episodes, with an average of 10.6 states per episode.
+
+\begin{table}[htbp]
+\caption{Dataset characteristics from $\piH$-guided sampling.\label{tab:data_summary}}
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Metric & Value \\
+\midrule
+Total states & 100,000 \\
+Unique episodes & 9,438 \\
+Mean states per episode & 10.6 \\
+Median HCP & 10 \\
+Level 0-2 states & 57.3\% \\
+Level 3-4 states & 34.7\% \\
+Level 5-7 states & 8.0\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Compositional FDA Results}
+
+All 35 covariate-action combinations, consisting of 5 covariates by 7 actions, showed statistically significant ALR differences after Benjamini-Hochberg correction with $p_{\text{adj}} < 0.01$ for all combinations. Table~\ref{tab:alr_effects} summarizes the mean ALR differences.
+
+\begin{table}[htbp]
+\caption{Mean ALR differences $\bar{\Delta}_b$ by covariate and action. Positive values indicate $\piR$ preference; negative values indicate $\piH$ preference.\label{tab:alr_effects}}
+\begin{center}
+\begin{tabular}{lrrrrrrr}
+\toprule
+Covariate & Dbl & 1$\clubsuit$ & 1$\diamondsuit$ & 1$\heartsuit$ & 1$\spadesuit$ & 1NT & 2$\clubsuit$ \\
+\midrule
+hcp\_total & $-$0.92 & +4.25 & +3.27 & +0.82 & $-$1.10 & $-$0.65 & $-$1.28 \\
+controls\_total & $-$0.68 & +4.16 & +4.17 & +0.73 & $-$0.81 & $-$0.50 & $-$1.03 \\
+ltc & $-$0.63 & +5.47 & +4.19 & +0.73 & $-$0.87 & $-$0.55 & $-$0.99 \\
+quick\_tricks & $-$0.91 & +4.29 & +3.27 & +0.82 & $-$1.08 & $-$0.65 & $-$1.08 \\
+n\_contracts\_bid & $-$1.12 & +5.09 & +3.92 & +0.78 & $-$1.26 & $-$0.73 & $-$0.93 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+The key finding is that $\piR$ shows substantially stronger preference for minor suit openings, with 1$\clubsuit$ showing +4.16 to +5.47 ALR units and 1$\diamondsuit$ showing +3.27 to +4.19 ALR units across covariates. In contrast, $\piH$ shows relatively stronger preference for 1$\spadesuit$ with $-$0.81 to $-$1.26 ALR units and 2$\clubsuit$ with $-$0.93 to $-$1.28 ALR units. Figure~\ref{fig:alr_curve} shows an example ALR difference curve for 1$\clubsuit$ versus HCP, and Figure~\ref{fig:alr_heatmap} presents the full heatmap of mean effects.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=4in]{fig/hcp_total_1C.png}
+\end{center}
+\caption{ALR difference curve $\Delta_{1\clubsuit}(\text{HCP})$ with 95\% bootstrap confidence band. Positive values indicate $\piR$ preference for 1$\clubsuit$ relative to $\piH$. The strong positive effect with +4.25 mean demonstrates that $\piR$ favors 1$\clubsuit$ openings across the HCP range.\label{fig:alr_curve}}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=5in]{fig/summary_heatmap_diff.png}
+\end{center}
+\caption{Heatmap of mean ALR differences across all covariate-action combinations. Red indicates $\piR$ preference; blue indicates $\piH$ preference. Minor suit openings 1$\clubsuit$ and 1$\diamondsuit$ show consistent positive effects.\label{fig:alr_heatmap}}
+\end{figure}
+
+Bootstrap analysis revealed that 84\% to 100\% of grid points showed pointwise significance, and 54\% to 100\% showed simultaneous significance across different combinations.
+
+\subsection{JSD Analysis Results}
+
+The JSD distribution is highly right-skewed as shown in Table~\ref{tab:jsd_stats}, indicating that while most states show low policy disagreement, a substantial tail exhibits near-complete divergence.
+
+\begin{table}[htbp]
+\caption{JSD distribution statistics.\label{tab:jsd_stats}}
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Statistic & Value \\
+\midrule
+Mean & 0.321 \\
+Median & 0.087 \\
+Standard deviation & 0.380 \\
+90th percentile & 0.956 \\
+95th percentile & 0.989 \\
+Maximum & 0.999 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+The EBM model achieved cross-validated $R^2 = 0.356$ with RMSE = 0.305. Table~\ref{tab:ebm_importance} shows the top features predicting JSD.
+
+\begin{table}[htbp]
+\caption{EBM feature importance for predicting JSD.\label{tab:ebm_importance}}
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Feature & Importance \\
+\midrule
+auction\_level & 0.097 \\
+contract\_strain & 0.043 \\
+rho\_opened & 0.031 \\
+is\_passout & 0.027 \\
+has\_contract & 0.027 \\
+lho\_opened & 0.026 \\
+partner\_opened & 0.018 \\
+self\_opened & 0.014 \\
+is\_competitive & 0.014 \\
+hcp\_total $\times$ auction\_level & 0.013 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+The auction\_level feature is the most important predictor with importance 2.3 times higher than the second-ranked feature. High-JSD states concentrate at low auction levels with mean 1.04 compared to the overall mean of 2.21, and in pass-out situations. Figure~\ref{fig:jsd_dist} shows the JSD distribution, and Figure~\ref{fig:ebm_importance} visualizes the EBM feature importance.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=4in]{fig/jsd_distribution.png}
+\end{center}
+\caption{Distribution of Jensen-Shannon divergence between $\piH$ and $\piR$. The distribution is highly right-skewed with median 0.087 but mean 0.321, indicating most states have low divergence while a substantial tail shows near-complete policy disagreement.\label{fig:jsd_dist}}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=4.5in]{fig/feature_importance.png}
+\end{center}
+\caption{EBM feature importance for predicting JSD. The auction\_level dominates with importance 2.3 times higher than any other feature, confirming that policy divergence is concentrated in early bidding decisions.\label{fig:ebm_importance}}
+\end{figure}
+
+\subsection{Occlusion Analysis Results}
+
+Table~\ref{tab:occlusion} presents the KL divergence when each feature group is permuted.
+
+\begin{table}[htbp]
+\caption{Feature group sensitivity via permutation occlusion.\label{tab:occlusion}}
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Feature Group & Dimensions & KL Divergence \\
+\midrule
+Bidding history & 420 & 6.486 \\
+Hand encoding & 52 & 6.173 \\
+Position & 4 & 0.116 \\
+Vulnerability & 4 & 0.093 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+Bidding history and hand encoding are comparably critical with KL around 6, while context features including position and vulnerability have much smaller impact with KL around 0.1. This confirms that policy decisions are primarily driven by the current auction state and hand composition. Figure~\ref{fig:occlusion} visualizes these results.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=4in]{fig/group_sensitivity_precise.png}
+\end{center}
+\caption{Feature group sensitivity via permutation occlusion. Bidding history and hand encoding produce high KL divergence when permuted at around 6, while vulnerability and position have minimal impact at around 0.1.\label{fig:occlusion}}
+\end{figure}
+
+\subsection{Rule Distillation Results}
+
+Table~\ref{tab:tree_results} shows decision tree fidelity across depth constraints.
+
+\begin{table}[htbp]
+\caption{Decision tree distillation results.\label{tab:tree_results}}
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+Max Depth & Val Accuracy & Top-3 Agreement & Leaves & Features Used \\
+\midrule
+3 & 8.1\% & -- & 8 & 3 \\
+5 & 6.5\% & -- & 31 & 15 \\
+7 & 14.4\% & -- & 100 & 27 \\
+10 & 26.4\% & 57.0\% & 348 & 38 \\
+15 & 31.9\% & -- & 1,021 & 45 \\
+Unlimited & 32.4\% & 61.0\% & 1,161 & 48 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+Even unlimited-depth trees achieve only 32.4\% top-1 agreement, indicating substantial complexity in the neural policy. However, 61\% top-3 agreement suggests the tree captures the rough preference ordering. Figure~\ref{fig:fidelity} shows the fidelity-complexity tradeoff.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=5in]{fig/fidelity_vs_complexity.png}
+\end{center}
+\caption{Decision tree fidelity versus complexity. Accuracy increases with depth but saturates around 32\%, indicating that simple rule-based models cannot fully capture the neural policy's behavior.\label{fig:fidelity}}
+\end{figure}
+
+Per-action GAMs achieved high accuracy for individual action prediction: Pass at 77.7\%, Double at 93.5\%, 1$\clubsuit$ at 98.7\%, 1$\diamondsuit$ at 98.1\%, and 3NT at 98.1\%. The binary classification task is easier than multi-class prediction.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion}
+\label{sec:discussion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Key Findings}
+
+Our analysis reveals 3 principal findings about the differences between human-imitation and RL-optimized bridge bidding policies.
+
+The largest policy differences occur in opening bid decisions. $\piR$ exhibits substantially stronger preferences for minor suit openings including 1$\clubsuit$ and 1$\diamondsuit$, while $\piH$ shows relatively stronger preferences for major suits like 1$\spadesuit$ and strong artificial bids like 2$\clubsuit$. This pattern is consistent across all 5 covariates analyzed.
+
+The EBM analysis identifies auction\_level as the most important predictor of policy divergence, with importance 2.3 times higher than any other feature. High-JSD states concentrate at low auction levels, confirming that the policies diverge most at the start of bidding.
+
+Occlusion analysis reveals that bidding history and hand encoding are comparably critical with KL around 6, while vulnerability and position have minimal impact with KL around 0.1. This indicates that the policy primarily relies on what has been bid and what cards are held, with context information playing a secondary role.
+
+\subsection{Bridge Theory Implications}
+
+The finding that $\piR$ prefers minor suit openings more strongly than $\piH$ has interesting implications for bidding system design. Standard American uses 5-card majors, meaning 1$\heartsuit$ and 1$\spadesuit$ openings promise at least 5 cards in the suit. The intent is to make major suit openings more descriptive.
+
+Our data suggest that even with this constraint, the RL policy finds value in channeling more hands through minor suit openings. This could reflect more precise subsequent bidding sequences starting from 1$\clubsuit$ or 1$\diamondsuit$, better competitive position when opponents intervene, or reduced ambiguity compared to the wide HCP range of major suit openings. These hypotheses warrant further investigation through game-theoretic analysis or targeted experiments.
+
+\subsection{Methodological Contributions}
+
+This work demonstrates the utility of compositional FDA for policy comparison. The ALR transformation appropriately handles the simplex constraint on probability vectors, and GAM fitting with cluster bootstrap provides rigorous inference while accounting for within-episode correlation.
+
+The combination of global and local interpretability methods provides complementary perspectives. JSD analysis identifies where policies disagree, ALR curves show how specific action preferences differ, and occlusion analysis reveals what information drives decisions. This multi-method approach strengthens the overall conclusions by providing cross-validation across different analytical lenses.
+
+\subsection{Limitations}
+
+Several limitations should be noted. Our analysis uses $\piH$-generated states, which may underrepresent states that $\piR$ would reach more frequently. The 32\% top-1 agreement of decision trees indicates that simple rule-based explanations capture only a fraction of the policy's behavior. Our analysis is observational, so we cannot claim that the identified feature relationships are causal. The results are specific to this particular $\piH$ and $\piR$ pair and may not generalize to other training configurations.
+
+\subsection{Future Work}
+
+Future directions include extending the analysis to play and defense phases, investigating whether identified divergences correlate with game outcomes, developing hybrid policies that combine RL optimization with human-interpretable constraints, and applying similar methods to other imperfect-information games.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+\label{sec:conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We have presented a framework for interpreting differences between human-imitation and RL-optimized bridge bidding policies. Through compositional FDA, JSD analysis, occlusion studies, and rule distillation, we find that policy divergence concentrates in opening bid decisions, with the RL policy showing stronger minor suit preferences. The bidding history and hand encoding are the primary information sources for both policies. While simple interpretable models achieve limited fidelity, the multi-method approach provides insights into the behavior of neural network bridge AI.
+
+\bigskip
+\begin{center}
+{\large\bf SUPPLEMENTARY MATERIAL}
+\end{center}
+
+\begin{description}
+
+\item[Code Repository:] Python implementation of all analysis methods, including data collection, FDA, JSD analysis, occlusion, and distillation modules. (ZIP file)
+
+\item[Execution Log:] Detailed log of all experimental runs with intermediate results. (Markdown file)
+
+\item[Additional Figures:] Full set of 35 ALR curves, JSD distribution plots, and GAM shape functions. (PDF file)
+
+\end{description}
+
+\bibliographystyle{agsm}
+\bibliography{references}
+
+\end{document}

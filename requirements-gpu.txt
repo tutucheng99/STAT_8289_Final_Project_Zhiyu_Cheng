@@ -1,0 +1,22 @@
+# ============================================================
+# JAX GPU Installation (CUDA 12)
+# ============================================================
+# Run: pip install -r requirements-gpu.txt
+# Then: pip install -r requirements-base.txt
+# ============================================================
+# For other CUDA versions, see:
+# https://jax.readthedocs.io/en/latest/installation.html
+# ============================================================
+#
+# IMPORTANT NOTES:
+# - GPU wheels are primarily available for Linux x86_64
+# - Windows users: WSL2 with CUDA support is recommended
+# - Minimum driver requirements for CUDA 12: Driver >= 525.60.13
+# - For CUDA 11, use: pip install -U "jax[cuda11_pip]"
+#
+# Quick verification:
+#   python -c "import jax; print(jax.devices())"
+# ============================================================
+
+# JAX with CUDA 12 support (official recommended method)
+jax[cuda12]==0.4.23

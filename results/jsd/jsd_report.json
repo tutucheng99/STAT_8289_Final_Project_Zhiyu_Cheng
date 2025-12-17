@@ -1,0 +1,174 @@
+{
+  "timestamp": "2025-12-17T10:47:17.765367",
+  "config": {
+    "data_dir": "data/processed/policy_samples",
+    "data_file": "100K_pi_H_v2_policy_samples.npz",
+    "meta_file": "100K_pi_H_v2_metadata.json",
+    "results_dir": "results/jsd",
+    "n_bootstrap": 100,
+    "n_bins": 10,
+    "n_splines": 10,
+    "seed": 42,
+    "ebm_interactions": 10
+  },
+  "data_summary": {
+    "n_samples": 100000,
+    "n_episodes": 9438,
+    "n_features": 48,
+    "n_actions": 38
+  },
+  "sensitivity_analysis": {
+    "mean_abs_diff": 2.3413115764748435e-05,
+    "std_abs_diff": 3.86494069611537e-05,
+    "max_abs_diff": 0.0003532939421853065,
+    "p50_abs_diff": 6.988218042291994e-06,
+    "p90_abs_diff": 7.388603701288245e-05,
+    "p95_abs_diff": 0.00010894906284490409,
+    "p99_abs_diff": 0.00018105822706172757,
+    "correlation": 0.9999999968201622,
+    "mean_relative_diff": 0.00010688932321360714
+  },
+  "jsd_used": "raw",
+  "jsd_statistics": {
+    "jsd_type": "raw",
+    "mean": 0.3214460822813626,
+    "std": 0.37992779479790695,
+    "median": 0.08714421954882373,
+    "min": 0.0,
+    "max": 0.9994580214770056,
+    "p90": 0.9557082662774069,
+    "p95": 0.9886835790758032,
+    "p99": 0.998872324236753
+  },
+  "curve_summary": {
+    "covariates_analyzed": [
+      "hcp_total",
+      "controls_total",
+      "ltc",
+      "quick_tricks",
+      "n_contracts_bid"
+    ],
+    "n_bins": 10,
+    "n_bootstrap": 100
+  },
+  "ebm_summary": {
+    "cv_r2_mean": 0.35605840197096505,
+    "cv_r2_std": 0.006808713789127268,
+    "cv_rmse_mean": 0.30486178081962295,
+    "cv_rmse_std": 0.0014751065890977386,
+    "top_features": [
+      {
+        "term": "auction_level",
+        "importance": 0.0968128299095289
+      },
+      {
+        "term": "contract_strain",
+        "importance": 0.04267726453959352
+      },
+      {
+        "term": "rho_opened",
+        "importance": 0.030673198757550053
+      },
+      {
+        "term": "is_passout",
+        "importance": 0.02715896132579347
+      },
+      {
+        "term": "has_contract",
+        "importance": 0.027109600637760987
+      },
+      {
+        "term": "lho_opened",
+        "importance": 0.026130104682455323
+      },
+      {
+        "term": "partner_opened",
+        "importance": 0.018482246102702826
+      },
+      {
+        "term": "self_opened",
+        "importance": 0.013840542426598282
+      },
+      {
+        "term": "is_competitive",
+        "importance": 0.013619645251221741
+      },
+      {
+        "term": "hcp_total & auction_level",
+        "importance": 0.013359565968117503
+      }
+    ]
+  },
+  "high_jsd_features": [
+    {
+      "feature": "auction_level",
+      "high_jsd_mean": 1.042799949645996,
+      "all_mean": 2.2060799598693848,
+      "all_std": 1.5860867500305176,
+      "effect_size": -0.7334277629852295
+    },
+    {
+      "feature": "n_contracts_bid",
+      "high_jsd_mean": 1.4043999910354614,
+      "all_mean": 2.639580011367798,
+      "all_std": 2.047241449356079,
+      "effect_size": -0.6033387184143066
+    },
+    {
+      "feature": "is_passout",
+      "high_jsd_mean": 0.387800008058548,
+      "all_mean": 0.16901999711990356,
+      "all_std": 0.37476956844329834,
+      "effect_size": 0.5837720632553101
+    },
+    {
+      "feature": "has_contract",
+      "high_jsd_mean": 0.6122000217437744,
+      "all_mean": 0.8309800028800964,
+      "all_std": 0.37476956844329834,
+      "effect_size": -0.5837720036506653
+    },
+    {
+      "feature": "contract_strain",
+      "high_jsd_mean": 0.7904000282287598,
+      "all_mean": 1.5999000072479248,
+      "all_std": 1.6989760398864746,
+      "effect_size": -0.4764634370803833
+    },
+    {
+      "feature": "lho_opened",
+      "high_jsd_mean": 0.03759999945759773,
+      "all_mean": 0.19885000586509705,
+      "all_std": 0.39913490414619446,
+      "effect_size": -0.4039987623691559
+    },
+    {
+      "feature": "rho_opened",
+      "high_jsd_mean": 0.10220000147819519,
+      "all_mean": 0.2508000135421753,
+      "all_std": 0.4334735572338104,
+      "effect_size": -0.342812180519104
+    },
+    {
+      "feature": "is_competitive",
+      "high_jsd_mean": 0.18320000171661377,
+      "all_mean": 0.3366599977016449,
+      "all_std": 0.47256746888160706,
+      "effect_size": -0.32473668456077576
+    },
+    {
+      "feature": "self_opened",
+      "high_jsd_mean": 0.23340000212192535,
+      "all_mean": 0.1696700006723404,
+      "all_std": 0.37534263730049133,
+      "effect_size": 0.16979153454303741
+    },
+    {
+      "feature": "we_vulnerable",
+      "high_jsd_mean": 0.42179998755455017,
+      "all_mean": 0.4967400133609772,
+      "all_std": 0.49998939037323,
+      "effect_size": -0.1498832255601883
+    }
+  ]
+}

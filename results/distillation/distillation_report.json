@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-12-17T12:25:07.301774",
+  "decision_tree": {},
+  "gam": {
+    "0": {
+      "action_name": "Pass",
+      "train_accuracy": 0.7840625,
+      "val_accuracy": 0.7771
+    },
+    "1": {
+      "action_name": "Dbl",
+      "train_accuracy": 0.9396125,
+      "val_accuracy": 0.93495
+    },
+    "3": {
+      "action_name": "1C",
+      "train_accuracy": 0.9884,
+      "val_accuracy": 0.98685
+    },
+    "4": {
+      "action_name": "1D",
+      "train_accuracy": 0.9811375,
+      "val_accuracy": 0.98135
+    },
+    "21": {
+      "action_name": "4S",
+      "train_accuracy": 0.9776125,
+      "val_accuracy": 0.98045
+    }
+  },
+  "fidelity_summary": {}
+}

@@ -1,0 +1,66 @@
+{
+  "timestamp": "2025-12-17T11:11:50.913462",
+  "method": "precise_permutation",
+  "n_samples": 10000,
+  "n_permutations": 5,
+  "group_results": {
+    "vulnerability": {
+      "kl_mean": 0.09294412850620973,
+      "kl_std": 0.004861485480647747,
+      "jsd_mean": 0.014052506083108637,
+      "jsd_std": 0.0005323053141885133,
+      "tvd_mean": 0.048846160912914494,
+      "action_change_rate": 0.04426,
+      "method": "permutation",
+      "n_permutations": 5
+    },
+    "position": {
+      "kl_mean": 0.1154832080668928,
+      "kl_std": 0.0057285946533797115,
+      "jsd_mean": 0.017760829685014218,
+      "jsd_std": 0.0005148050994052403,
+      "tvd_mean": 0.05139183376083215,
+      "action_change_rate": 0.0503,
+      "method": "permutation",
+      "n_permutations": 5
+    },
+    "bidding": {
+      "kl_mean": 6.485883494452783,
+      "kl_std": 0.0509692198061817,
+      "jsd_mean": 0.3026712466198285,
+      "jsd_std": 0.0006002152672040685,
+      "tvd_mean": 0.48161658586565964,
+      "action_change_rate": 0.47830000000000006,
+      "method": "permutation",
+      "n_permutations": 5
+    },
+    "hand": {
+      "kl_mean": 6.172943978018124,
+      "kl_std": 0.04536367753236332,
+      "jsd_mean": 0.33870291705396777,
+      "jsd_std": 0.001641474739006581,
+      "tvd_mean": 0.5425765292831419,
+      "action_change_rate": 0.5452600000000001,
+      "method": "permutation",
+      "n_permutations": 5
+    }
+  },
+  "ranking": [
+    [
+      "bidding",
+      6.485883494452783
+    ],
+    [
+      "hand",
+      6.172943978018124
+    ],
+    [
+      "position",
+      0.1154832080668928
+    ],
+    [
+      "vulnerability",
+      0.09294412850620973
+    ]
+  ]
+}

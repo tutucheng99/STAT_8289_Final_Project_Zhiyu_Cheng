@@ -1,0 +1,117 @@
+{
+  "timestamp": "2025-12-17T11:11:51.073209",
+  "summary": {
+    "observation_groups": {
+      "vulnerability": {
+        "start": 0,
+        "end": 4,
+        "size": 4
+      },
+      "position": {
+        "start": 4,
+        "end": 8,
+        "size": 4
+      },
+      "bidding": {
+        "start": 8,
+        "end": 428,
+        "size": 420
+      },
+      "hand": {
+        "start": 428,
+        "end": 480,
+        "size": 52
+      }
+    },
+    "covariate_groups": {
+      "hand": {
+        "features": [
+          "hcp_total",
+          "hcp_spade",
+          "hcp_heart",
+          "hcp_diamond",
+          "hcp_club",
+          "len_spade",
+          "len_heart",
+          "len_diamond",
+          "len_club",
+          "longest_suit",
+          "shortest_suit",
+          "is_balanced",
+          "n_singletons",
+          "n_voids",
+          "controls_total",
+          "controls_spade",
+          "controls_heart",
+          "controls_diamond",
+          "controls_club",
+          "ltc",
+          "quick_tricks",
+          "n_aces",
+          "n_kings",
+          "n_queens",
+          "n_jacks",
+          "n_honors_in_long_suits",
+          "has_ak_in_any_suit",
+          "n_suits_with_honors"
+        ],
+        "size": 28
+      },
+      "bidding": {
+        "features": [
+          "n_contracts_bid",
+          "auction_level",
+          "contract_strain",
+          "is_doubled",
+          "is_redoubled",
+          "is_competitive",
+          "is_passout",
+          "has_contract",
+          "self_opened",
+          "partner_opened",
+          "rho_opened",
+          "lho_opened",
+          "double_status"
+        ],
+        "size": 13
+      },
+      "context": {
+        "features": [
+          "we_vulnerable",
+          "they_vulnerable",
+          "both_vulnerable",
+          "none_vulnerable",
+          "favorable_vul",
+          "unfavorable_vul",
+          "n_passed_before_opening"
+        ],
+        "size": 7
+      }
+    }
+  },
+  "precise_analysis": {
+    "method": "precise_permutation",
+    "n_samples": 10000,
+    "ranking": [
+      [
+        "bidding",
+        6.485883494452783
+      ],
+      [
+        "hand",
+        6.172943978018124
+      ],
+      [
+        "position",
+        0.1154832080668928
+      ],
+      [
+        "vulnerability",
+        0.09294412850620973
+      ]
+    ]
+  },
+  "key_findings": [
+    "Precise: Most sensitive group is 'bidding' (KL=6.4859)"
+  ]
+}

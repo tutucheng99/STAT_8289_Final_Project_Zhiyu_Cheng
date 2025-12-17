@@ -1,0 +1,169 @@
+|--- auction_level <= 4.50
+|   |--- auction_level <= 2.50
+|   |   |--- is_doubled <= 0.50
+|   |   |   |--- auction_level <= 1.50
+|   |   |   |   |--- len_spade <= 3.50
+|   |   |   |   |   |--- len_heart <= 3.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- len_heart >  3.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |--- len_spade >  3.50
+|   |   |   |   |   |--- contract_strain <= 0.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- contract_strain >  0.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |--- auction_level >  1.50
+|   |   |   |   |--- len_club <= 4.50
+|   |   |   |   |   |--- len_diamond <= 4.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- len_diamond >  4.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |--- len_club >  4.50
+|   |   |   |   |   |--- len_club <= 5.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- len_club >  5.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |--- is_doubled >  0.50
+|   |   |   |--- contract_strain <= 1.50
+|   |   |   |   |--- lho_opened <= 0.50
+|   |   |   |   |   |--- auction_level <= 1.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- auction_level >  1.50
+|   |   |   |   |   |   |--- truncated branch of depth 4
+|   |   |   |   |--- lho_opened >  0.50
+|   |   |   |   |   |--- is_competitive <= 0.50
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |   |--- is_competitive >  0.50
+|   |   |   |   |   |   |--- class: 2
+|   |   |   |--- contract_strain >  1.50
+|   |   |   |   |--- hcp_total <= 10.50
+|   |   |   |   |   |--- auction_level <= 1.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- auction_level >  1.50
+|   |   |   |   |   |   |--- truncated branch of depth 4
+|   |   |   |   |--- hcp_total >  10.50
+|   |   |   |   |   |--- is_competitive <= 0.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- is_competitive >  0.50
+|   |   |   |   |   |   |--- truncated branch of depth 3
+|   |--- auction_level >  2.50
+|   |   |--- auction_level <= 3.50
+|   |   |   |--- contract_strain <= 0.50
+|   |   |   |   |--- hcp_heart <= 5.50
+|   |   |   |   |   |--- len_diamond <= 4.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- len_diamond >  4.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |--- hcp_heart >  5.50
+|   |   |   |   |   |--- controls_club <= 1.50
+|   |   |   |   |   |   |--- truncated branch of depth 4
+|   |   |   |   |   |--- controls_club >  1.50
+|   |   |   |   |   |   |--- class: 27
+|   |   |   |--- contract_strain >  0.50
+|   |   |   |   |--- len_diamond <= 4.50
+|   |   |   |   |   |--- len_club <= 5.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- len_club >  5.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |--- len_diamond >  4.50
+|   |   |   |   |   |--- len_diamond <= 5.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- len_diamond >  5.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |--- auction_level >  3.50
+|   |   |   |--- contract_strain <= 2.50
+|   |   |   |   |--- contract_strain <= 0.50
+|   |   |   |   |   |--- len_club <= 2.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- len_club >  2.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |--- contract_strain >  0.50
+|   |   |   |   |   |--- controls_total <= 5.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- controls_total >  5.50
+|   |   |   |   |   |   |--- truncated branch of depth 4
+|   |   |   |--- contract_strain >  2.50
+|   |   |   |   |--- contract_strain <= 3.50
+|   |   |   |   |   |--- controls_total <= 4.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- controls_total >  4.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |--- contract_strain >  3.50
+|   |   |   |   |   |--- controls_total <= 3.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- controls_total >  3.50
+|   |   |   |   |   |   |--- truncated branch of depth 4
+|--- auction_level >  4.50
+|   |--- auction_level <= 5.50
+|   |   |--- len_diamond <= 4.50
+|   |   |   |--- n_aces <= 2.50
+|   |   |   |   |--- contract_strain <= 1.50
+|   |   |   |   |   |--- len_heart <= 4.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- len_heart >  4.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |--- contract_strain >  1.50
+|   |   |   |   |   |--- len_heart <= 4.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- len_heart >  4.50
+|   |   |   |   |   |   |--- truncated branch of depth 3
+|   |   |   |--- n_aces >  2.50
+|   |   |   |   |--- n_jacks <= 0.50
+|   |   |   |   |   |--- class: 27
+|   |   |   |   |--- n_jacks >  0.50
+|   |   |   |   |   |--- hcp_total <= 18.50
+|   |   |   |   |   |   |--- class: 31
+|   |   |   |   |   |--- hcp_total >  18.50
+|   |   |   |   |   |   |--- class: 31
+|   |   |--- len_diamond >  4.50
+|   |   |   |--- partner_opened <= 0.50
+|   |   |   |   |--- contract_strain <= 0.50
+|   |   |   |   |   |--- len_diamond <= 5.50
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |   |--- len_diamond >  5.50
+|   |   |   |   |   |   |--- class: 24
+|   |   |   |   |--- contract_strain >  0.50
+|   |   |   |   |   |--- hcp_total <= 10.50
+|   |   |   |   |   |   |--- truncated branch of depth 4
+|   |   |   |   |   |--- hcp_total >  10.50
+|   |   |   |   |   |   |--- truncated branch of depth 3
+|   |   |   |--- partner_opened >  0.50
+|   |   |   |   |--- hcp_heart <= 3.50
+|   |   |   |   |   |--- len_club <= 3.50
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |   |--- len_club >  3.50
+|   |   |   |   |   |   |--- class: 28
+|   |   |   |   |--- hcp_heart >  3.50
+|   |   |   |   |   |--- class: 27
+|   |--- auction_level >  5.50
+|   |   |--- hcp_total <= 16.50
+|   |   |   |--- len_spade <= 4.50
+|   |   |   |   |--- contract_strain <= 0.50
+|   |   |   |   |   |--- hcp_club <= 3.50
+|   |   |   |   |   |   |--- truncated branch of depth 3
+|   |   |   |   |   |--- hcp_club >  3.50
+|   |   |   |   |   |   |--- class: 32
+|   |   |   |   |--- contract_strain >  0.50
+|   |   |   |   |   |--- contract_strain <= 1.50
+|   |   |   |   |   |   |--- truncated branch of depth 4
+|   |   |   |   |   |--- contract_strain >  1.50
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |--- len_spade >  4.50
+|   |   |   |   |--- hcp_spade <= 3.50
+|   |   |   |   |   |--- favorable_vul <= 0.50
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |   |--- favorable_vul >  0.50
+|   |   |   |   |   |   |--- class: 29
+|   |   |   |   |--- hcp_spade >  3.50
+|   |   |   |   |   |--- contract_strain <= 2.50
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |   |--- contract_strain >  2.50
+|   |   |   |   |   |   |--- class: 2
+|   |   |--- hcp_total >  16.50
+|   |   |   |--- longest_suit <= 5.50
+|   |   |   |   |--- n_aces <= 2.50
+|   |   |   |   |   |--- class: 32
+|   |   |   |   |--- n_aces >  2.50
+|   |   |   |   |   |--- class: 32
+|   |   |   |--- longest_suit >  5.50
+|   |   |   |   |--- class: 32

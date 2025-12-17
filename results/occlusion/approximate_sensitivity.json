@@ -1,0 +1,104 @@
+{
+  "timestamp": "2025-12-17T11:10:45.122893",
+  "method": "approximate_ebm",
+  "n_samples": 100000,
+  "n_permutations": 10,
+  "cv_r2": 0.35605840197096505,
+  "cv_rmse": 0.30486178081962295,
+  "group_importances": {
+    "hand": 0.1304722924489089,
+    "bidding": 0.3053729839435041,
+    "context": 0.028415759726416967
+  },
+  "permutation_sensitivity": {
+    "hand": {
+      "mean_abs_change": 0.09311659117470657,
+      "std_abs_change": 0.07843473601455642,
+      "max_abs_change": 1.0505270772103477,
+      "median_abs_change": 0.07543407637151837,
+      "n_features": 28,
+      "feature_names": [
+        "hcp_total",
+        "hcp_spade",
+        "hcp_heart",
+        "hcp_diamond",
+        "hcp_club",
+        "len_spade",
+        "len_heart",
+        "len_diamond",
+        "len_club",
+        "longest_suit",
+        "shortest_suit",
+        "is_balanced",
+        "n_singletons",
+        "n_voids",
+        "controls_total",
+        "controls_spade",
+        "controls_heart",
+        "controls_diamond",
+        "controls_club",
+        "ltc",
+        "quick_tricks",
+        "n_aces",
+        "n_kings",
+        "n_queens",
+        "n_jacks",
+        "n_honors_in_long_suits",
+        "has_ak_in_any_suit",
+        "n_suits_with_honors"
+      ]
+    },
+    "bidding": {
+      "mean_abs_change": 0.20850218874437645,
+      "std_abs_change": 0.16499561250864722,
+      "max_abs_change": 1.1294019959912884,
+      "median_abs_change": 0.1716248506964233,
+      "n_features": 13,
+      "feature_names": [
+        "n_contracts_bid",
+        "auction_level",
+        "contract_strain",
+        "is_doubled",
+        "is_redoubled",
+        "is_competitive",
+        "is_passout",
+        "has_contract",
+        "self_opened",
+        "partner_opened",
+        "rho_opened",
+        "lho_opened",
+        "double_status"
+      ]
+    },
+    "context": {
+      "mean_abs_change": 0.019208918909191203,
+      "std_abs_change": 0.015312361164796852,
+      "max_abs_change": 0.09761451138207722,
+      "median_abs_change": 0.015728830537882488,
+      "n_features": 7,
+      "feature_names": [
+        "we_vulnerable",
+        "they_vulnerable",
+        "both_vulnerable",
+        "none_vulnerable",
+        "favorable_vul",
+        "unfavorable_vul",
+        "n_passed_before_opening"
+      ]
+    }
+  },
+  "ranking": [
+    [
+      "bidding",
+      0.20850218874437645
+    ],
+    [
+      "hand",
+      0.09311659117470657
+    ],
+    [
+      "context",
+      0.019208918909191203
+    ]
+  ]
+}

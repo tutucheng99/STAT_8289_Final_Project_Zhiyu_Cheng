@@ -1,0 +1,116 @@
+# ============================================================
+# Bridge Bidding Interpretability - Git Ignore
+# ============================================================
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ===== Virtual Environments =====
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ===== Large Files / Results =====
+# Model checkpoints
+checkpoints/
+*.pkl
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Data files
+data/raw/
+data/cache/
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.parquet
+
+# Results (tracked via run_id)
+# results/
+
+# ===== Logs =====
+logs/
+*.log
+wandb/
+
+# ===== IDE =====
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# ===== OS =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ===== Testing =====
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# ===== Build =====
+*.manifest
+*.spec
+
+# ===== Distribution =====
+.Python
+*.egg-info/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ===== Secrets (never commit) =====
+*.env
+.env.*
+secrets.yaml
+credentials.json
+
+# ===== Temporary Files =====
+*.tmp
+*.temp
+*.bak
